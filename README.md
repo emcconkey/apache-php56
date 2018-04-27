@@ -15,7 +15,7 @@ You should mount a volume at `/var/www/html/` and store your html/php files ther
 docker run --name apache-php -d -p 8080:8000 \
   -v /host/path/to/html:/var/www/html/ \
   -v /host/path/to/logs:/var/log/apache2/ \
-  emcconkey/apache-php
+  emcconkey/apache-php56
 ```
 
 Copy your html/php files to /host/path/to/html and then go to the server:port combination you set up.
@@ -28,7 +28,7 @@ docker run --name apache-php -d -p 8080:8000 \
   -v /host/path/to/html:/var/www/html/ \
   -v /host/path/to/logs:/var/log/apache2/ \
   -v /host/path/to/config:/etc/apache2/sites-enabled \
-  emcconkey/apache-php
+  emcconkey/apache-php56
 ```
 
 Put as many *.conf files as you want in /host/path/to/config and apache will load them on startup.
@@ -166,3 +166,4 @@ License
 -------------------
 Apache + PHP docker image is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT)
 
+y

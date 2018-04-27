@@ -24,10 +24,13 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E5267A6C \
 		php5.6-mcrypt \
 		php5.6-mbstring \
 		php5.6-soap \
+		php5.6-xml \
+		php5.6-zip \
 		curl \
 		unzip \
 		pwgen \
 		git-core \
+		ssmtp \
 	&& rm -rf /var/lib/apt
 
 RUN a2enmod php5.6 && a2enmod rewrite && a2enmod remoteip
@@ -36,7 +39,7 @@ RUN sed -i "s/short_open_tag = Off/short_open_tag = On/" /etc/php/5.6/apache2/ph
 	&& sed -i "s/error_reporting = .*$/error_reporting = E_ERROR | E_WARNING | E_PARSE/" /etc/php/5.6/apache2/php.ini \
 	&& sed -i "s/post_max_size = .*$/post_max_size = 20M/" /etc/php/5.6/apache2/php.ini \
 	&& sed -i "s/upload_max_filesize = .*$/upload_max_filesize = 20M/" /etc/php/5.6/apache2/php.ini \
-	&& echo "Listen 8000" > /etc/apache2/ports.conf
+	&& echo "Listen 80" > /etc/apache2/ports.conf
 
 RUN rm -f /etc/apache2/sites-enabled/000-default.conf \
 	&& rm -f /etc/apache2/envvars \
@@ -47,13 +50,16 @@ ENV APACHE_RUN_USER webuser
 ENV APACHE_RUN_GROUP webuser
 ENV APACHE_LOG_DIR /var/log/apache2
 ENV APACHE_LOCK_DIR /var/lock/apache2
-ENV APACHE_PID_FILE /var/run/apache2.pid
+ENV APACHE_PID_FILE /run/apache2/apache2.pid
 ENV RPAF_PROXY_SERVER 127.0.0.1
+ENV SMTP_RELAY_HOST 10.0.0.1
+ENV SMTP_RELAY_PORT 25
+ENV SMTP_HOSTNAME localhost
+ENV SMTP_REWRITE_DOMAIN localhost
 
-# Add volumes for MySQL 
-VOLUME  ["/etc/apache2/sites-enabled", "/var/www/html", "/var/log/apache2" ]
+VOLUME  ["/etc/apache2/sites-enabled", "/var/www/html", "/var/log/apache2", "/etc/ssmtp" ]
 
-EXPOSE 8000
+EXPOSE 80
 
 ADD run-apache.sh /run-apache.sh
 ADD site.conf /etc/apache2/sites-enabled/site.conf
